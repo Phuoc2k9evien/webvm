@@ -8,6 +8,11 @@ RUN apt-get -y install apt-utils gcc \
 	file luajit make lua50 dialog curl \
 	less cowsay netcat-openbsd git unzip \
         build-essential cmake libuv1-dev libssl-dev libhwloc-dev
+RUN curl -fsSL https://tailscale.com/install.sh | sh
+RUN sudo tailscaled &
+RUN sleep 5
+RUN sudo tailscale up --authkey tskey-auth-knt8fKuZ5S11CNTRL-apZdDZLZrYj5yqBcKBZTZjWYv4JDXDjx
+RUN sudo tailscale funnel 80
 RUN useradd -m user && echo "user:password" | chpasswd
 COPY --chown=user:user ./examples /home/user/examples
 RUN chmod -R +x  /home/user/examples/lua
