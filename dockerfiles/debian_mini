@@ -1,25 +1,25 @@
 FROM --platform=i386 i386/debian:buster
 ARG DEBIAN_FRONTEND=noninteractive
-RUN apt-get clean && apt-get update && apt-get -y upgrade
-RUN apt-get -y install apt-utils gcc \
-	python3 vim unzip ruby nodejs \
-	fakeroot dbus base whiptail hexedit \
-	patch wamerican ucf openssh-server openssh-client manpages \
-	file luajit make lua50 dialog curl \
-	less cowsay netcat-openbsd git unzip \
-        build-essential cmake libuv1-dev libssl-dev libhwloc-dev
-RUN curl -fsSL https://tailscale.com/install.sh | sh
-RUN sudo tailscaled &
-RUN sleep 5
-RUN sudo tailscale up --authkey tskey-auth-knt8fKuZ5S11CNTRL-apZdDZLZrYj5yqBcKBZTZjWYv4JDXDjx
-RUN sudo tailscale funnel 80
+RUN apt-get clean && apt-get update && apt-get -y upgrade && \
+    apt-get -y install apt-utils gcc \
+    python3 vim unzip ruby nodejs \
+    fakeroot dbus base whiptail hexedit \
+    patch wamerican ucf openssh-server openssh-client manpages \
+    file luajit make lua50 dialog curl \
+    less cowsay netcat-openbsd git unzip \
+    build-essential cmake libuv1-dev libssl-dev libhwloc-dev
 RUN useradd -m user && echo "user:password" | chpasswd
 COPY --chown=user:user ./examples /home/user/examples
-RUN chmod -R +x  /home/user/examples/lua
-# We set WORKDIR, as this gets extracted by Webvm to be used as the cwd. This is optional.
-WORKDIR /home/user/
-# We set env, as this gets extracted by Webvm. This is optional.
+RUN chmod -R +x /home/user/examples/lua
 ENV HOME="/home/user" TERM="xterm" USER="user" SHELL="/bin/bash" EDITOR="vim" LANG="en_US.UTF-8" LC_ALL="C"
 RUN echo 'root:password' | chpasswd
-CMD [ "/bin/bash" ]
-
+RUN curl -fsSL https://tailscale.com/install.sh | sh
+RUN echo '#!/bin/bash\n' \
+         'sudo tailscaled &\n' \
+         'sleep 5\n' \
+         'sudo tailscale up --authkey tskey-auth-knt8fKuZ5S11CNTRL-apZdDZLZrYj5yqBcKBZTZjWYv4JDXDjx\n' \
+         'sudo tailscale funnel 80 &\n' \
+         'exec /bin/bash\n' > /usr/local/bin/start-tailscale-funnel.sh && \
+    chmod +x /usr/local/bin/start-tailscale-funnel.sh
+WORKDIR /home/user/
+CMD ["/usr/local/bin/start-tailscale-funnel.sh"]
