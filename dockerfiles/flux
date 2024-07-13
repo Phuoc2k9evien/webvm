@@ -2,7 +2,7 @@ FROM --platform=i386 i386/debian:buster
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get clean && apt-get update && apt-get -y upgrade && \
     apt-get -y install apt-utils gcc \
-    python3 vim fluxbox xvfb\
+    python3 vim \
     patch wamerican ucf openssh-server openssh-client manpages \
     file luajit make lua50 dialog curl \
 RUN useradd -m user && echo "user:password" | chpasswd
@@ -11,4 +11,3 @@ RUN chmod -R +x /home/user/examples/lua
 ENV HOME="/home/user" TERM="xterm" USER="user" SHELL="/bin/bash" EDITOR="vim" LANG="en_US.UTF-8" LC_ALL="C"
 RUN echo 'root:password' | chpasswd
 WORKDIR /home/user/
-CMD ["/usr/local/bin/start-tailscale-funnel.sh"]
